@@ -21,6 +21,9 @@
 		},
 
 		{	name: 	"canvasHoverController",			
+        },
+
+        {	name: 	"canvasAnimationController",			
 		},	
 
 		{	name: 	"canvasMarkController",
@@ -310,6 +313,7 @@
                                         {name: "canvasSelectController"},
                                         {name: "canvasMarkController"},
                                         {name: "canvasHoverController"},
+                                        {name: "canvasAnimationController"},
                                         {name: "canvasFilterController"},
                                         {name: "canvasFlyToController"},
                                         {name: "relationConnectorController"},

@@ -1,4 +1,4 @@
-﻿var setup = {
+var setup = {
 		
 	controllers: [	
 
@@ -8,7 +8,7 @@
 			logEventConsole		: false
 		},		
 		
-		{name: "canvasHoverController",},
+		{name: "canvasAnimationController",},
 		{name: "canvasSelectController"},	
 		{name: "canvasResetViewController"},
 		
@@ -49,7 +49,7 @@
 					
 					controllers: [
 						{ name: "defaultLogger" },												
-						{ name: "canvasHoverController" },
+						{ name: "canvasAnimationController" },
 						{ name: "canvasSelectController" },
 					],						
 				}

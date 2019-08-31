@@ -54,7 +54,8 @@ EOT;
         <script type="text/javascript" src="scripts/CanvasManipulator.js"></script>
         <script type="text/javascript" src="scripts/ActionController.js"></script>
 	    <script type="text/javascript" src="scripts/RelationConnector/RelationConnectorController.js"></script>
-	    <script type="text/javascript" src="scripts/CanvasHover/CanvasHoverController.js"></script>
+        <script type="text/javascript" src="scripts/CanvasHover/CanvasHoverController.js"></script>
+        <script type="text/javascript" src="scripts/CanvasClick/CanvasAnimationController.js"></script>
 EOT;
         $canvasId = "x3dom-x3dElement-canvas";
         $visMode = "x3dom";

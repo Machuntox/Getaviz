@@ -30,6 +30,19 @@ var canvasManipulator = (function() {
 
 
 	//manipulate
+	function changeSize(entities, size) {
+		const entityIds = [];
+		entities.forEach(function(entity){
+			entityIds.push(entity.id);
+		});
+		
+		const parts = multiPart.getParts(entityIds);
+		if(parts === null){
+			events.log.error.publish({ text: "CanvasManipualtor - highlightEntities - parts for entityIds not found"});
+			return;
+		}
+	}
+
 	function highlightEntities(entities, color){
 
 		const entityIds = [];
