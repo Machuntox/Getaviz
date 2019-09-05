@@ -130,6 +130,174 @@ var canvasManipulator = (function () {
         });
     }
 
+    function pulsateColor(entities, color, time)
+    {
+        entities.forEach(function (entity2) {
+            //  getting the entity again here, because without it the check if originalTransparency is defined fails sometimes
+            let entity = model.getEntityById(entity2.id);
+            let component = document.getElementById(entity.id);
+            if (component == undefined) {
+                events.log.error.publish({text: "CanvasManipualtor - highlightEntities - components for entityIds not found"});
+                return;
+            }
+            if (entity.originalColor == undefined) {
+                entity.originalColor = component.getAttribute("color");
+                entity.currentColor = entity.originalColor;
+            }
+            if (entity["originalTransparency"] === undefined) {
+                // in case "material".opacity is undefined originalTransparency gets set to 0 which would be the default value anyways
+                entity.originalTransparency = {};
+                entity.currentTransparency = {};
+                if(component.getAttribute("material").opacity) {
+                    entity.originalTransparency = 1 - component.getAttribute("material").opacity;
+                } else entity.originalTransparency = 0;
+                entity.currentTransparency = entity.originalTransparency;
+            }
+            component.setAttribute('animation__color', `property: color; dir: alternate; dur: ${time}; easing: easeInOutSine; loop: true; to: ${color}`);
+
+            setTransparency(component, 0);
+        });
+    }
+
+    function resetPulsateColor(entities)
+    {
+        entities.forEach(function (entity2) {
+            //  getting the entity again here, because without it the check if originalTransparency is defined fails sometimes
+            let entity = model.getEntityById(entity2.id);
+            let component = document.getElementById(entity.id);
+            if (component == undefined) {
+                events.log.error.publish({text: "CanvasManipualtor - highlightEntities - components for entityIds not found"});
+                return;
+            }
+            if (entity.originalColor == undefined) {
+                entity.originalColor = component.getAttribute("color");
+                entity.currentColor = entity.originalColor;
+            }
+            if (entity["originalTransparency"] === undefined) {
+                // in case "material".opacity is undefined originalTransparency gets set to 0 which would be the default value anyways
+                entity.originalTransparency = {};
+                entity.currentTransparency = {};
+                if(component.getAttribute("material").opacity) {
+                    entity.originalTransparency = 1 - component.getAttribute("material").opacity;
+                } else entity.originalTransparency = 0;
+                entity.currentTransparency = entity.originalTransparency;
+            }
+            component.removeAttribute('animation__color');
+            setColor(component, entity.currentColor);
+            setTransparency(component, 0);
+        });
+    }
+    
+    function pulsateSize(entities, size, time) 
+    {
+        entities.forEach(function (entity2) {
+            //  getting the entity again here, because without it the check if originalTransparency is defined fails sometimes
+            let entity = model.getEntityById(entity2.id);
+            let component = document.getElementById(entity.id);
+            if (component == undefined) {
+                events.log.error.publish({text: "CanvasManipualtor - highlightEntities - components for entityIds not found"});
+                return;
+            }
+            if (entity.scale == undefined) {
+                entity.originalColor = component.getAttribute("color");
+                entity.currentColor = entity.originalColor;
+            }
+            if (entity["originalTransparency"] === undefined) {
+                // in case "material".opacity is undefined originalTransparency gets set to 0 which would be the default value anyways
+                entity.originalTransparency = {};
+                entity.currentTransparency = {};
+                if(component.getAttribute("material").opacity) {
+                    entity.originalTransparency = 1 - component.getAttribute("material").opacity;
+                } else entity.originalTransparency = 0;
+                entity.currentTransparency = entity.originalTransparency;
+            }
+            component.setAttribute('animation__yoyo', `property: scale; dir: alternate; dur: ${time}; easing: easeInOutSine; loop: true; to: ` + size);
+            setTransparency(component, 0);
+        });
+    }
+
+    function resetPulsateSize(entities)
+    {
+        entities.forEach(function (entity2) {
+            //  getting the entity again here, because without it the check if originalTransparency is defined fails sometimes
+            let entity = model.getEntityById(entity2.id);
+            let component = document.getElementById(entity.id);
+            if (component == undefined) {
+                events.log.error.publish({text: "CanvasManipualtor - highlightEntities - components for entityIds not found"});
+                return;
+            }
+            if (entity.scale == undefined) {
+                entity.originalColor = component.getAttribute("color");
+                entity.currentColor = entity.originalColor;
+            }
+            if (entity["originalTransparency"] === undefined) {
+                // in case "material".opacity is undefined originalTransparency gets set to 0 which would be the default value anyways
+                entity.originalTransparency = {};
+                entity.currentTransparency = {};
+                if(component.getAttribute("material").opacity) {
+                    entity.originalTransparency = 1 - component.getAttribute("material").opacity;
+                } else entity.originalTransparency = 0;
+                entity.currentTransparency = entity.originalTransparency;
+            }
+            component.removeAttribute('animation__yoyo');
+            component.setAttribute('scale', '1 1 1');
+            setTransparency(component, 0);
+        });
+    }
+
+    function resetPulsates(entities)
+    {
+        entities.forEach(function (entity2) {
+            //  getting the entity again here, because without it the check if originalTransparency is defined fails sometimes
+            let entity = model.getEntityById(entity2.id);
+            let component = document.getElementById(entity.id);
+            if (component == undefined) {
+                events.log.error.publish({text: "CanvasManipualtor - highlightEntities - components for entityIds not found"});
+                return;
+            }
+            if (entity.scale == undefined) {
+                entity.originalColor = component.getAttribute("color");
+                entity.currentColor = entity.originalColor;
+            }
+            if (entity.originalColor == undefined) {
+                entity.originalColor = component.getAttribute("color");
+                entity.currentColor = entity.originalColor;
+            }
+            if (entity["originalTransparency"] === undefined) {
+                // in case "material".opacity is undefined originalTransparency gets set to 0 which would be the default value anyways
+                entity.originalTransparency = {};
+                entity.currentTransparency = {};
+                if(component.getAttribute("material").opacity) {
+                    entity.originalTransparency = 1 - component.getAttribute("material").opacity;
+                } else entity.originalTransparency = 0;
+                entity.currentTransparency = entity.originalTransparency;
+            }
+            component.removeAttribute('animation__color');
+            setColor(component, entity.currentColor);
+            setTransparency(component, 0);
+        });
+    }
+
+    function pulsatePosition()
+    {
+
+    }
+
+    function resetPulsatePosition()
+    {
+
+    }
+
+    function pulsateRotation()
+    {
+
+    }
+
+    function resetPulsateRotation()
+    {
+
+    }
+
     function highlightEntities(entities, color) {
         entities.forEach(function (entity2) {
             //  getting the entity again here, because without it the check if originalTransparency is defined fails sometimes
@@ -233,6 +401,20 @@ var canvasManipulator = (function () {
 
         changeColorOfEntities: changeColorOfEntities,
         resetColorOfEntities: resetColorOfEntities,
+
+        pulsateColor: pulsateColor,
+        resetPulsateColor: resetPulsateColor,
+
+        pulsateSize: pulsateSize,
+        resetPulsateSize: resetPulsateSize,
+
+        pulsatePosition: pulsatePosition,
+        resetPulastePosition: resetPulsatePosition,
+
+        pulsateRotation: pulsateRotation,
+        resetPulsateRotation: resetPulsateRotation,
+
+        resetPulsates: resetPulsates,
 
         hideEntities: hideEntities,
         showEntities: showEntities,

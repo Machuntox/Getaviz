@@ -41,6 +41,23 @@ var canvasManipulator = (function() {
 			events.log.error.publish({ text: "CanvasManipualtor - highlightEntities - parts for entityIds not found"});
 			return;
 		}
+		parts.setDiffuseColor
+	}
+
+	function changeColorPeriodically(entities, color) {
+		const entityIds = [];
+		entities.forEach(function(entity){
+			entityIds.push(entity.id);
+		});
+
+		const parts = multiPart.getParts(entityIds);
+		if(parts === null){
+			events.log.error.publish({ text: "CanvasManipualtor - highlightEntities - parts for entityIds not found"});
+			return;
+		}
+		parts.css('color', 'green');
+		sky.setAttribute('animation__color', `property: color; dir: alternate; dur: 2000; easing: easeInOutSine; loop: true; to: #${getRandomColor()}`);
+
 	}
 
 	function highlightEntities(entities, color){
@@ -58,6 +75,10 @@ var canvasManipulator = (function() {
 
 		parts.unhighlight();
 		parts.highlight(color);
+		console.log(entityIds);
+		console.log("parts");
+		console.log(parts);
+
 	}
 
 
@@ -329,6 +350,8 @@ var canvasManipulator = (function() {
 
 		changeColorOfEntities 			: changeColorOfEntities,
 		resetColorOfEntities			: resetColorOfEntities,
+		
+		changeColorPeriodically			: changeColorPeriodically,
 	
 		hideEntities					: hideEntities,
 		showEntities					: showEntities,

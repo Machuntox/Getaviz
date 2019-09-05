@@ -30,7 +30,8 @@
         <script type="text/javascript" src="scripts/AframeCanvasManipulator.js"></script>
         <script type="text/javascript" src="scripts/AframeActionController.js"></script>
 	    <script type="text/javascript" src="scripts/RelationConnector/AframeRelationConnectorController.js"></script>
-	    <script type="text/javascript" src="scripts/CanvasHover/AframeCanvasHoverController.js"></script>
+        <script type="text/javascript" src="scripts/CanvasHover/AframeCanvasHoverController.js"></script>
+        <script type="text/javascript" src="scripts/CanvasAnimation/AframeCanvasAnimationController.js"></script>
         <script type="text/javascript" src="scripts/camera-beta.js"></script>
 EOT;
         $canvasId = "aframe-canvas";
@@ -55,7 +56,8 @@ EOT;
         <script type="text/javascript" src="scripts/ActionController.js"></script>
 	    <script type="text/javascript" src="scripts/RelationConnector/RelationConnectorController.js"></script>
         <script type="text/javascript" src="scripts/CanvasHover/CanvasHoverController.js"></script>
-        <script type="text/javascript" src="scripts/CanvasClick/CanvasAnimationController.js"></script>
+        <script type="text/javascript" src="scripts/CanvasAnimation/CanvasAnimationController.js"></script>
+        <script type="text/javascript" src="scripts/CanvasAnimation/AframeCanvasAnimationController.js"></script>
 EOT;
         $canvasId = "x3dom-x3dElement-canvas";
         $visMode = "x3dom";

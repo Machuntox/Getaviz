@@ -28,13 +28,13 @@ var canvasMarkController = (function() {
 				
 	function activate(){  
 
-		actionController.actions.mouse.key[controllerConfig.selectionMouseKey].down.subscribe(downAction);
-		actionController.actions.mouse.key[controllerConfig.selectionMouseKey].up.subscribe(upAction);
-		actionController.actions.mouse.key[controllerConfig.selectionMouseKey].during.subscribe(duringAction);
+		actionController.actions.mouse.key[controllerConfig.selectionMouseKey].down.subscribe(downAction); // pushing rightclick -> activate
+		actionController.actions.mouse.key[controllerConfig.selectionMouseKey].up.subscribe(upAction); //  removing finger vom righclick -> activate
+		actionController.actions.mouse.key[controllerConfig.selectionMouseKey].during.subscribe(duringAction); // long click for duration -> activate
 		actionController.actions.mouse.move.subscribe(mouseMove);	
 
-		events.marked.on.subscribe(onEntityMarked);
-		events.marked.off.subscribe(onEntityUnmarked); 
+		events.marked.on.subscribe(onEntityMarked); // change color for long time
+		events.marked.off.subscribe(onEntityUnmarked); // reset Color
     }
 		
 	function reset(){
