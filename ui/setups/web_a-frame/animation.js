@@ -8,8 +8,7 @@ var setup = {
 			logEventConsole		: false
 		},		
 		
-		{name: "aframeCanvasAnimationController",},
-		{name: "canvasSelectController"},	
+		{name: "aframeCanvasAnimationController"},
 		{name: "canvasResetViewController"},
 		
 	],
@@ -50,7 +49,6 @@ var setup = {
 					controllers: [
 						{ name: "defaultLogger" },												
 						{ name: "aframeCanvasAnimationController" },
-						{ name: "canvasSelectController" },
 					],						
 				}
 			}

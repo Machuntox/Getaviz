@@ -33,8 +33,8 @@ var canvasMarkController = (function() {
 		actionController.actions.mouse.key[controllerConfig.selectionMouseKey].during.subscribe(duringAction); // long click for duration -> activate
 		actionController.actions.mouse.move.subscribe(mouseMove);	
 
-		events.marked.on.subscribe(onEntityMarked); // change color for long time
-		events.marked.off.subscribe(onEntityUnmarked); // reset Color
+		events.marked.on.subscribe(onEntityMarked);
+		events.marked.off.subscribe(onEntityUnmarked); 
     }
 		
 	function reset(){

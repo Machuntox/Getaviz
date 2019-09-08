@@ -1,46 +1,63 @@
 var aframeCanvasAnimationController
  = (function() {
-    
-    var isInNavigation = false;
-	
+    	
     function initialize(setupConfig){
 		application.transferConfigParams(setupConfig, controllerConfig);
-		var cssLink = document.createElement("link");
-		cssLink.type = "text/css";
-		cssLink.rel = "stylesheet";
-		cssLink.href = "scripts/CanvasHover/ho.css";
-		document.getElementsByTagName("head")[0].appendChild(cssLink);	
     }
 
     let animationMode = {
-		size : "size",
+		scale : "scale",
 		color : "color",
 		position : "position",
-		rotation : "rotation"
+		rotation : "rotation",
+		false: false
 	}
 
-	//config parameters	
+	// config parameters | change them to your preferences
 	var controllerConfig = {
-        hoverTiming : 2000, // 1000 = 1s
+		// hover
+        hoverTime : 2000, // 1000 = 1s
         hoverColor : "#000000", // must be hexcode
-        hoverSize : '2 2 2', // 'X-achis, Y-achis, Z-achis' | 2 -> double in size
-		markingColor : "blue",
-		selectColor : "green",
-		hoverAnimation : animationMode.size,
-		selectAnimation : animationMode.color,
-		markAnimation : animationMode.color,
+		hoverScale : '2 2 2', // 'X-axis, Y-axis, Z-axis' | 2 -> double in scale
+		hoverPosition: '5 5 5', //  'X-axis, Y-axis, Z-axis'
+		hoverRotation: '0 360 0', // 'X-axis, Y-axis, Z-axis' | number means degrees of rotation
+		// select (leftclick)
+		selectTime : 2000,
+        selectColor : "#ffffff", 
+		selectScale : '2 2 2', 
+		selectPosition: '5 5 5',
+		selectRotation: '0 360 0',
+		// mark (rightclick)
+		markTime : 2000,
+        markColor : "#ffffff", 
+		markScale : '2 2 2', 
+		markPosition: '5.9 30.4 5',
+		markRotation: '0 360 0',
+		hoverAnimation : animationMode.color,
+		selectAnimation : animationMode.rotate,
+		markAnimation : animationMode.rotation,
+
+		// down change these!
 		markMouseKey: 2,
 		selectionMouseKey: 1
-
     };
 	
 	function activate(){
+		// active hoverAnimation
+		actionController.actions.mouse.hover.subscribe(handleOnMouseEnter); // hover
+		actionController.actions.mouse.unhover.subscribe(handleOnMouseLeave); // unhover
+		events.hovered.on.subscribe(onEntityHover); 
+		events.hovered.off.subscribe(onEntityUnhover); 
 
-		actionController.actions.mouse.hover.subscribe(handleOnMouseEnter); // subscribe event
-		actionController.actions.mouse.unhover.subscribe(handleOnMouseLeave); // unsubscribe event
-							
-		events.hovered.on.subscribe(onEntityHover); // function while hovering
-		events.hovered.off.subscribe(onEntityUnhover); // function when unhover
+		// activate selectAnimation
+		actionController.actions.mouse.key[controllerConfig.selectionMouseKey].down.subscribe(selectAction); // mouse leftclick -> activate
+		events.selected.on.subscribe(onEntitySelected);
+		events.selected.off.subscribe(onEntityUnselected);
+
+		//activate markAnimation
+		actionController.actions.mouse.key[controllerConfig.markMouseKey].down.subscribe(markAction); // mouse rightclick -> activate
+		events.marked.on.subscribe(onEntityMarked);
+		events.marked.off.subscribe(onEntityUnmarked);
 	}
 	
 	function reset(){
@@ -48,28 +65,19 @@ var aframeCanvasAnimationController
 		
 		hoveredEntities.forEach(function(hoveredEntity){
 			var unHoverEvent = {					
-                    sender: aframeCanvasAnimationController
-                    ,
+                    sender: aframeCanvasAnimationController,
 					entities: [hoveredEntity]
 			};
 
 			events.hovered.off.publish(unHoverEvent);	
 		});		
 	}
-		
-	function handleOnMousedown(canvasEvent) {
-		isInNavigation = true;
-	}
-	
-	function handleOnMouseup(canvasEvent) {
-		isInNavigation = false;
-	}
+
+	/* 
+	* Hover
+	*/
 
 	function handleOnMouseEnter(eventObject) {
-		if(isInNavigation){
-			return;
-		}        
-
 		var entity = model.getEntityById(eventObject.target.id);
 		if(entity === undefined){
 			entity = eventObject.target.id;
@@ -104,6 +112,123 @@ var aframeCanvasAnimationController
 	}
 
 	function onEntityHover(applicationEvent) {
+		change(applicationEvent, controllerConfig.hoverAnimation);
+    }
+	
+	function onEntityUnhover(applicationEvent) {
+		resetChange(applicationEvent, controllerConfig.hoverAnimation);
+	}
+	
+	/* 
+	* Select
+	*/
+
+	function selectAction(eventObject){
+		var applicationEvent = {			
+			sender: aframeCanvasAnimationController,
+			entities: [eventObject.entity]
+		};
+		
+		events.selected.on.publish(applicationEvent);		
+	}
+
+	function onEntitySelected(applicationEvent) {
+		var entity = applicationEvent.entities[0];			
+		var selectedEntities = events.selected.getEntities();
+		var element = document.getElementById(entity.id);
+
+		//select same entity again -> stop animation
+		if(selectedEntities.has(entity.id) && (element.hasAttribute("animation__color") || element.hasAttribute("animation__yoyo"))){
+			selectedEntities.forEach(function(selectedEntity){
+								
+				var unselectEvent = {					
+					sender: aframeCanvasAnimationController,
+					entities: [selectedEntity]
+				}	
+				events.selected.off.publish(unselectEvent);	
+			});
+
+			return;
+		}
+
+		change(applicationEvent, controllerConfig.selectAnimation);
+	}
+
+	function onEntityUnselected(applicationEvent) {
+		resetChange(applicationEvent, controllerConfig.selectAnimation);
+	}
+
+	/* 
+	* Mark
+	*/
+
+	function markAction(applicationEvent) {
+		var applicationEvent = {			
+			sender: aframeCanvasAnimationController,
+			entities: [applicationEvent.entity]
+		};
+		
+		events.marked.on.publish(applicationEvent);
+
+	}
+
+	function onEntityMarked(applicationEvent) {
+		var entity = applicationEvent.entities[0];			
+		var markedEntities = events.marked.getEntities();
+		var element = document.getElementById(entity.id);
+
+		//select same entity again -> stop animation
+		if(markedEntities.has(entity.id) && (element.hasAttribute("animation__color") || element.hasAttribute("animation__yoyo") || element.hasAttribute("animation__position"))){
+			markedEntities.forEach(function(markedEntity){
+				var unmarkedEvent = {					
+					sender: aframeCanvasAnimationController,
+					entities: [markedEntity]
+				}	
+				events.marked.off.publish(unmarkedEvent);	
+			});
+			return;
+		}
+
+		change(applicationEvent, controllerConfig.markAnimation);
+	}
+
+	function onEntityUnmarked(applicationEvent) {
+		resetChange(applicationEvent, controllerConfig.markAnimation);	
+	}
+
+	/* 
+	* change and unchange animations
+	*/
+
+	function change(applicationEvent, animation)
+	{
+		// set variables for hover
+		if(event.type == 'mouseenter') {
+			var time = controllerConfig.hoverTime;
+			var color = controllerConfig.hoverColor;
+			var scale = controllerConfig.hoverScale;
+			var position = controllerConfig.hoverPosition;
+			var rotation = controllerConfig.hoverRotation;
+		}
+
+		// set variables for select
+		if(event.button == 0) { // 0 -> mouse leftclick
+			var time = controllerConfig.selectTime;
+			var color = controllerConfig.selectColor;
+			var scale = controllerConfig.selectScale;
+			var position = controllerConfig.selectPosition;
+			var rotation = controllerConfig.selectRotation;
+		}
+
+		// set variables for mark
+		if(event.button == 2) { // 2 -> mouse rightclick
+			var time = controllerConfig.markTime;
+			var color = controllerConfig.markColor;
+			var scale = controllerConfig.markScale;
+			var position = controllerConfig.markPosition;
+			var rotation = controllerConfig.markRotation;
+		}
+
 		var entity = applicationEvent.entities[0];
 
         if(entity === undefined){
@@ -118,32 +243,37 @@ var aframeCanvasAnimationController
 			return;
 		}
         
-        if(controllerConfig.hoverAnimation === "size"){
-			changeSize(entity);
+        if(animation === "scale"){
+			canvasManipulator.pulsateScale([entity], scale, time);
 			return;
 		}
 		
-		if(controllerConfig.hoverAnimation === "color"){
-			changeColor(entity);
+		if(animation === "color"){
+			canvasManipulator.pulsateColor([entity], color, time);
 			return;
 		}
 
-		if(controllerConfig.hoverAnimation === "position"){
-			changePosition(entity);
+		if(animation === "position"){
+			canvasManipulator.pulsatePosition([entity], position, time);
 			return;
 		}
 
-		if(controllerConfig.hoverAnimation === "rotation"){
-			changeRotation(entity);
+		if(animation === "rotation"){
+			canvasManipulator.pulsateRotation([entity], rotation, time);
+			return;
+		} 
+		
+		if(animation == false) {
 			return;
 		} else {
-			console.log("You didn't pick any Animation for the selectAction.");
+			console.log("You didn't pick any Animation for " + animation + ".");
 			return;
 		}
-    }
-	
-	function onEntityUnhover(applicationEvent) {
-        var entity = applicationEvent.entities[0];
+	}
+
+	function resetChange(applicationEvent, animation)
+	{
+		var entity = applicationEvent.entities[0];
 
         if(entity === undefined){
 			events.log.error.publish({ text: "Entity is not defined"});
@@ -157,57 +287,33 @@ var aframeCanvasAnimationController
 			return;
 		}
         
-        if(controllerConfig.hoverAnimation === "size"){
-            canvasManipulator.resetPulsateSize([entity]);
+        if(animation === "scale"){
+            canvasManipulator.resetPulsateScale([entity]);
 			return;
 		}
 		
-		if(controllerConfig.hoverAnimation === "color"){
+		if(animation === "color"){
             canvasManipulator.resetPulsateColor([entity]);
             return;
 		}
 
-		if(controllerConfig.hoverAnimation === "position"){
+		if(animation === "position"){
 			canvasManipulator.resetPulsatePosition([entity]);
 			return;
 		}
 
-		if(controllerConfig.hoverAnimation === "rotation"){
+		if(animation === "rotation"){
 			canvasManipulator.resetPulsateRotation([entity]);
 			return;
+		} 
+
+		if(animation == false) {
+			return;
 		} else {
-			console.log("You didn't pick any Animation for the selectAction.");
+			console.log("You didn't pick any Animation for " + animation + ".");
 			return;
 		}
-    }
-
-    function changeSize(entity)
-    {
-        if(entity.marked || entity.selected){
-			canvasManipulator.resetPulsates([entity]);	
-		} else {
-			canvasManipulator.pulsateSize([entity], controllerConfig.hoverSize, controllerConfig.hoverTiming);	
-        }
-    }
-    
-    function changeColor(entity)
-    {
-        if(entity.marked || entity.selected){
-			canvasManipulator.resetPulsates([entity]);	
-		} else {
-			canvasManipulator.pulsateColor([entity], controllerConfig.hoverColor, controllerConfig.hoverTiming);	
-		}
-    }
-
-    function changePosition(entity)
-    {
-
-    }
-
-    function changeRotation(entity)
-    {
-
-    }
+	}
 
     return {
         initialize: initialize,
