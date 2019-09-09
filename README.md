@@ -1,8 +1,8 @@
 # aframeCanvasAnimationController
 
-[file](https://github.com/Machuntox/Getaviz/blob/master/ui/scripts/CanvasAnimation/AframeCanvasAnimationController.js)
+Here is the [file](https://github.com/Machuntox/Getaviz/blob/master/ui/scripts/CanvasAnimation/AframeCanvasAnimationController.js)
 
-[testenvironmentlink](http://localhost:8082/ui/index.php?setup=web_a-frame/animation&model=City%20bank%20aframe&aframe=true)
+This is the link for the test-url: [testenvironmentlink](http://localhost:8082/ui/index.php?setup=web_a-frame/animation&model=City%20bank%20aframe&aframe=true)
 
 I added the following animations:
 - color -> changes color over time and back
