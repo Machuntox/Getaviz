@@ -33,8 +33,8 @@ var aframeCanvasAnimationController
 		markScale : '2 2 2', 
 		markPosition: '5.9 30.4 5',
 		markRotation: '0 360 0',
-		hoverAnimation : animationMode.color,
-		selectAnimation : animationMode.rotate,
+		hoverAnimation : animationMode.position,
+		selectAnimation : animationMode.color,
 		markAnimation : animationMode.rotation,
 
 		// down change these!

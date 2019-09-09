@@ -240,14 +240,20 @@ var canvasManipulator = (function () {
             //  getting the entity again here, because without it the check if originalTransparency is defined fails sometimes
             let entity = model.getEntityById(entity2.id);
             let component = document.getElementById(entity.id);
+            let canvas = document.getElementById("canvas");
             if (component == undefined) {
                 events.log.error.publish({text: "CanvasManipualtor - pulsatePosition - components for entityIds not found"});
                 return;
             }
+
             // save old position for later
             if (entity.originalPosition == undefined) {
-                entity.originalPosition = component.getAttribute("position");
-                entity.currentPosition = entity.originalPosition;
+                var coordinates = component.getAttribute("position");
+                coordinates = coordinates.x.toString() + " " + coordinates.y.toString() + " " + coordinates.z.toString();
+                if(canvas.getAttribute('data-id') !== entity.id) {
+                    canvas.setAttribute('data-oldPosition', coordinates);
+                    canvas.setAttribute('data-id', entity.id);
+                }
             }
             if (entity["originalTransparency"] === undefined) {
                 // in case "material".opacity is undefined originalTransparency gets set to 0 which would be the default value anyways
@@ -268,12 +274,13 @@ var canvasManipulator = (function () {
             //  getting the entity again here, because without it the check if originalTransparency is defined fails sometimes
             let entity = model.getEntityById(entity2.id);
             let component = document.getElementById(entity.id);
+            let canvas = document.getElementById("canvas");
             if (component == undefined) {
                 events.log.error.publish({text: "CanvasManipualtor - resetPulsatePosition - components for entityIds not found"});
                 return;
             }
             component.removeAttribute('animation__position');
-            setPosition(entity, entity.currentPosition);
+            component.setAttribute("position", canvas.getAttribute("data-oldPosition"));
             setTransparency(component, 0);
         });
     }
@@ -360,7 +367,6 @@ var canvasManipulator = (function () {
             setColor(component, entity.currentColor);
             setScale(component, entity.currentScale);
             setRotation(component, entity.currentRotation);
-            setPosition(component, entity.currentPosition);
             setTransparency(component, 0);
         });
     }
